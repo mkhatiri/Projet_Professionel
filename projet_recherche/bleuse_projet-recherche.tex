@@ -1,0 +1,242 @@
+%!TEX encoding = UTF-8 Unicode
+
+%\documentclass[11pt,draft,french]{article}	% mettre la langue principale en dernier
+\documentclass[11pt,final,french]{article}	% mettre la langue principale en dernier
+
+
+%------------------------------------------------------------------------------+
+%    ENCODAGE                                                                  |
+%------------------------------------------------------------------------------+
+
+% format de sauvegarde -----------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+
+
+%------------------------------------------------------------------------------+
+%    MISE EN PAGE DU DOCUMENT                                                  |
+%------------------------------------------------------------------------------+
+
+% taille des pages (A4 serré) ----------
+\usepackage{geometry}
+\geometry{a4paper}
+\geometry{inner=27.5mm,outer=27.5mm,top=27.5mm,bottom=27.5mm} % change marges par défaut
+
+% i18n ---------------------------------
+\usepackage{babel}
+\usepackage{isodate}
+
+% figures ------------------------------
+\usepackage{graphicx}
+\graphicspath{{./img/}}
+
+% citations ----------------------------
+\usepackage{cite}
+\bibliographystyle{acm}
+
+% support .pdf étendu ------------------
+% /!\ laisser hyperref en dernier package chargé
+\usepackage{hyperref}
+
+\hypersetup{
+%	hidelinks,								% liens cliquables sans cadre
+	pdfinfo={								% méta-informations supplémentaires
+		Title={Projet de Recherche},
+		Subject={Abstractions Qualitatives pour l'Ordonnancement Exascale},
+		Author={Raphaël Bleuse},
+	}
+}
+
+
+%------------------------------------------------------------------------------+
+%    MACROS                                                                    |
+%------------------------------------------------------------------------------+
+
+% macros fournies par des packages -----
+\usepackage[obeyDraft]{todonotes}
+\let\todoraw\todo
+\renewcommand{\todo}[1]{\todoraw[inline]{#1}}
+
+% macros génériques --------------------
+\newcommand{\cleardoubleemptypage}{\newpage{\pagestyle{empty}\cleardoublepage}}
+\newcommand{\shell}[1]{\texttt{#1}}
+
+% macros spécifiques -------------------
+\newcommand{\cf}{cf.}
+\newcommand{\cad}{c.-à-d.}
+\newcommand{\etal}{\emph{et al.}}
+\newcommand{\xkaapi}{XKaapi}
+\newcommand{\dada}{\textsc{Dada}}
+\newcommand{\heft}{\textsc{Heft}}
+\newcommand{\moebus}{\textsc{Moebus}}
+
+
+%------------------------------------------------------------------------------+
+%    DOCUMENT                                                                  |
+%------------------------------------------------------------------------------+
+
+\title{
+	Projet de Recherche \\
+	\large Abstractions Qualitatives pour l'Ordonnancement \emph{Exascale}
+}
+\author{
+	Raphaël \textsc{Bleuse}
+	({\small \href{mailto:raphael.bleuse@imag.fr}{raphael.bleuse@imag.fr}})
+}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\todo{ajouter résumé}
+
+Le prochain jalon que la communauté du calcul haute performance s'est posé est
+l'\emph{exascale} (\(10^{18}\)~Flop/s\footnote{Flop/s: opération flottante par
+seconde}).
+%
+Atteindre une telle puissance de calcul tout en maintenant les coûts de
+construction et d'exploitation raisonnables nécessite d'une part de changer la
+conception des machines et d'arriver à utiliser au mieux les ressources
+disponibles d'autre part.
+
+Les machines hybrides -- constituées d'unité de calcul plus ou moins
+spécialisées pour certaines tâches (calculs, entrées/sorties, …) -- sont une
+approche envisagée par les constructeurs pour augmenter les performances et
+l'efficacité énergétique des nouvelles architectures.
+
+Diminuer les coûts peut aussi se faire en réorganisant les réseaux de
+communication.
+%
+Cette réorganisation peut se faire via deux axes orthogonaux : via la
+conception et l'étude de nouvelles topologies ou via la fusion des réseaux de
+communication inter processus et d'entrées/sorties.
+%
+Néanmoins, cette multiplication des types de ressources de calcul, ainsi que la
+fusion des différents flux réseau constitue un \textbf{défi pour les couches
+logicielles chargées de gérer les ressources}.
+
+\
+
+Dans le cadre de mon doctorat, nous nous sommes intéressé au problème de
+l'ordonnancement d'applications sur les machines parallèles.
+%
+Une application est représentée comme un ensemble de tâches élémentaires à
+effectuer : trouver un ordonnancement revient à déterminer pour chaque tâche où
+et quand s'exécuter.
+%
+Les impacts des évolutions susmentionnées sur l'ordonnancement se font à
+plusieurs échelles : les évolutions architecturales des ressources de calcul
+ont un impact à grain fin (\cad{} au sein d'un unique nœud de calcul) alors que
+les évolutions des réseaux se font ressentir au niveau de la machine complète.
+%
+Au vue de la taille des machines actuelles, utiliser une description
+détaillée et quantitative des machines ne semble pas raisonnable et ne passera
+vraisemblablement pas à l'échelle.
+
+
+\section{Principaux résultats obtenus}
+
+Le début de mon doctorat a été consacré à l'étude d'ordonnancements à grain
+fin.
+%
+Nous nous sommes intéressé à l'ordonnancement de tâches séquentielles
+indépendantes au sein d'un nœud composé de deux types de ressources de calcul.
+%
+Nous avons proposé une notion d'\emph{affinité} comme indicateur qualitatif
+pour rendre compte du degré de liaison entre les différentes tâches d'une
+application parallèle.
+%
+L'idée sous-jacente était que des tâches en fortes interactions puissent être
+allouées sur des ressources voisines.
+%
+Ces travaux ont été présentés pendant la conférence
+Euro-Par~2014\cite{BleuseR2014Scheduling}.
+%
+Dans la même veine, nous avons implémenté des algorithmes d'ordonnancement
+proposant de meilleures garanties au prix d'une complexité plus grande.
+%
+Confirmant nos intuitions, le surcout de calcul induit est trop important et
+dégrade les performances globales.
+%
+Ces travaux ont conduit à une publication dans le journal
+CCPE\cite{BleuseR2015Scheduling}.
+
+La suite naturelle de ces travaux a été l'extension du modèle d'exécution des
+tâches : les tâches sont considérées \emph{moldables} sur un type de ressource
+de calcul.
+%
+Le problème a été abordé à l'aide d'un algorithme reposant sur un programme
+linéaire rapide, mais dont la complexité en pire cas est inconnue.
+%
+Nous avons aussi proposé un algorithme relaxé de faible complexité.
+%
+Suite à une première évaluation encourageante, un article en révision favorable
+et décrivant ces travaux vient d'être soumis au journal
+TPDS\cite{BleuseR2016Scheduling}.
+
+\
+
+Dans le cadre d'une collaboration au sein du partenariat inter laboratoire
+JLESC\footnote{\emph{Joint Lab. for Extreme Scale Computing} -- \cf{}
+\url{http://publish.illinois.edu/jointlab-esc/}}, j'ai eu accès à Blue~Waters
+-- la machine opérée par le NCSA\(\!\)\footnote{\emph{National Center
+for Supercomputing Applications} -- \cf{} \url{http://www.ncsa.illinois.edu/}}
+%
+La topologie réseau particulière de Blue~Waters présente des défis pour
+l'ordonnancement à l'échelle de la machine~\cite{EnosJ2014Topology}.
+%
+À partir des traces d'exécution de la machine, nous avons proposé une
+modélisation des machines prenant en compte les contraintes imposées par les
+topologies hétérarchiques~\cite{BleuseR2016Convex}.
+%
+Ces topologies ont la particularité de proposer une vision de la machine
+beaucoup moins hiérarchique que les topologies habituelles (\emph{fat tree},
+par exemple).
+%
+Par exemple, les nouvelles topologies réseaux proposées proposent des
+hétérarchies locales connectées dans une hiérarchie de faible
+profondeur~\cite{BestaM2014Slim,TuncerO2015PaC}.
+%
+Les contraintes dérivent alors principalement de l'agencement des nœuds
+hétérogènes au sein de la topologie.
+%
+La prise en compte des contraintes n'est pas faite de manière quantitative,
+mais au travers de propriétés géométriques : les allocations sont contraintes à
+être convexes.
+
+\section{Axes de recherche prévus}
+
+Le modèle théorique évoqué ci dessus a été bien reçu par la communauté.
+%
+Deux pistes à explorer dans le cadre de ce modèle ont été identifiées.
+
+L'entrelacement des flux d'entrée/sortie des différentes applications au sein
+d'un réseau perturbe les performances.
+%
+La convexité des allocations permet de limiter ces interférences.
+%
+Obliger les applications à se situer près des nœuds d'entrée/sortie peut
+permettre d'éliminer complètement ces interactions néfastes.
+%
+Quelles stratégies peuvent être mises en place pour ajouter ces contraintes à
+un cout raisonnable ?
+%
+Quel est l'impact de ces contraintes supplémentaires sur le taux d'utilisation
+des machines ?
+
+D'autre part, pour un certain nombre de ressources demandées par une
+application, il existe plusieurs formes convexes qui répondent aux besoins.
+%
+Une piste que nous souhaitons explorer est d'étudier quel choix de forme permet
+de mieux exploiter les machines.
+%
+Dans la même optique, nous souhaiterions étudier si allouer plus de ressources
+que demandé permettrait de simplifier l'étape d'allocation sans sans perdre
+trop de puissance de calcul.
+
+
+\bibliography{publications,references}
+
+\end{document}

@@ -1,0 +1,238 @@
+%!TEX encoding = UTF-8 Unicode
+
+%\documentclass[11pt,draft,french]{article}	% mettre la langue principale en dernier
+\documentclass[11pt,final,french]{article}	% mettre la langue principale en dernier
+
+
+%------------------------------------------------------------------------------+
+%    ENCODAGE                                                                  |
+%------------------------------------------------------------------------------+
+
+% format de sauvegarde -----------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+
+
+%------------------------------------------------------------------------------+
+%    MISE EN PAGE DU DOCUMENT                                                  |
+%------------------------------------------------------------------------------+
+
+% taille des pages (A4 serré) ----------
+\usepackage{geometry}
+\geometry{a4paper}
+\geometry{inner=27.5mm,outer=27.5mm,top=27.5mm,bottom=27.5mm} % change marges par défaut
+
+% i18n ---------------------------------
+\usepackage{babel}
+\usepackage{isodate}
+
+% figures ------------------------------
+\usepackage{graphicx}
+\graphicspath{{./img/}}
+
+% citations ----------------------------
+%\usepackage{cite}
+\bibliographystyle{acm}
+
+% support .pdf étendu ------------------
+% /!\ laisser hyperref en dernier package chargé
+\usepackage{hyperref}
+
+\hypersetup{
+%	hidelinks,								% liens cliquables sans cadre
+	pdfinfo={								% méta-informations supplémentaires
+		Title={Projet de Recherche},
+		Subject={ordonnancement de tâche sur plate-forme hétérogènes },
+		Author={Mohammed KHATIRI},
+	}
+}
+
+
+%------------------------------------------------------------------------------+
+%    MACROS                                                                    |
+%------------------------------------------------------------------------------+
+
+% macros fournies par des packages -----
+\usepackage[obeyDraft]{todonotes}
+\let\todoraw\todo
+\renewcommand{\todo}[1]{\todoraw[inline]{#1}}
+
+% macros génériques --------------------
+\newcommand{\cleardoubleemptypage}{\newpage{\pagestyle{empty}\cleardoublepage}}
+\newcommand{\shell}[1]{\texttt{#1}}
+
+% macros spécifiques -------------------
+\newcommand{\cf}{cf.}
+\newcommand{\cad}{c.-à-d.}
+\newcommand{\etal}{\emph{et al.}}
+\newcommand{\xkaapi}{XKaapi}
+\newcommand{\dada}{\textsc{Dada}}
+\newcommand{\heft}{\textsc{Heft}}
+\newcommand{\moebus}{\textsc{Moebus}}
+
+
+%------------------------------------------------------------------------------+
+%    DOCUMENT                                                                  |
+%------------------------------------------------------------------------------+
+
+\title{
+	Projet de Recherche \\
+	\large Ordonnancement de tâches sur plate-forme hétérogènes 
+}
+\author{
+	Mohammed \textsc{Khatiri}
+	({\small \href{mailto:mohammed.khatiri@inria.fr}{mohammed.khatiri@inria.fr}})
+}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\todo{ajouter résumé}
+
+
+%Ajouter ici une intro générale qui montre ce que tu as fait et ce que tu fais :
+
+
+
+Après l'obtention de mon master à l'Université Mohammed Premier à Oujda (UMPO).
+Je me suis engagé dans un sujet de recherche au sein de la même université sur l'ordonnancement
+d'un ensemble de tâches périodiques de délai implicite sur un multiprocesseur temps réel.
+Ce travail qui m'a fait découvrir le domaine de la recherche a été publié dans la conférence internationale 
+AICCSA 2015 \cite{confDaoudiDKK15}.
+J'ai aussi eu l'occasion d'avoire un postie de vacataire au sein de la même université,
+puis, j'ai démarré un doctorat en co-tutelle avec Mostafa El Daoudi (UMPO) et Denis Trystram (UGA)
+sur Ordonnancement de tâches sur plate-forme hétérogène.
+
+
+L'ordonnancement des applications sur les plates-formes de calcul parall\`eles et distribu\'ees
+de nouvelle g\'en\'eration est un probl\`eme crucial et difficile.
+En particulier, ces environnements se complexifient avec le passage à l'\'echelle vers
+des multi-coeurs de plus en plus gros, des hi\'erarchies m\'emoires locales toujours
+plus profondes et l'h\'et\'erog\'en\'eit\'e des composants de calcul
+(processeurs classiques avec acc\'el\'erateurs, clusters avec différentes topologies,
+plus noeuds sp\'ecialis\'es dans les Entr\'ees/Sorties ou dans l'analytics, etc.).
+Un des probl\`emes essentiels est la gestion et l'utilisation efficace
+des ressources de calcul h\'et\'erog\`enes (CPU, GPU, ARM, FPGA) pendant l'exécution des applications. 
+
+\section{Contexte du sujet de th\`ese}
+
+Le problème principal de ma thèse est l'ordonnancement des applications
+sur les nouvelles plates-formes de calcul.
+Une application est représentée comme un ensemble de t\^aches ind\'ependantes (t\^aches parall\`eles),
+ou avec d\'ependences (DAGs de tâches parallèles)
+où des t\^aches qui communiquent entre eux via la m\'emoire.
+L'ordonnancement consiste \`a d\'eterminer les processeurs sur lesquels
+chaque t\^ache doit \^etre ex\'ecutée et l’ordre dans lequel les t\^aches d\'ebuteront
+leur ex\'ecution dans le respect des contraintes de pr\'ec\'edence.
+Dans la littérature, il y existe deux types d'ordonnancement: (1)~hors ligne (ou bien statique)
+qui ordonnance toute l'application avant le d\'ebut de l'ex\'ecution.
+(2)~En-ligne (dynamique) où chaque t\^ache est ordonnanc\'ee
+sur l'un des processeurs de la plate-forme d\`es qu'elle arrive dans le syst\`eme.
+%ou toutes ces t\^aches pr\'ec\'edentes on finit leur ex\'ecution. 
+
+%Là, il faut décrire le résultat technique en quelques lignes... le Résulata est dans la partis Principaux travaux
+
+
+\subsection{Principaux travaux effectués}
+
+Mes travaux de recherche concernent notamment l'étude de l'ordonnancement
+des différents types d'applications sur les plates-formes hétérogènes.
+L'hétérogénéité peut apparaître au niveau du calcul (CPU avec différent vitesse, CPUs-GPUs)
+ou au niveau des communications explicites. 
+Nous avons travaillé sur trois sujets complémentaires qui sont détaillés ci-dessous.
+
+\begin{enumerate}
+\item 
+Nous nous sommes intéressés tout d'abord à l'étude de l'ordonnancement
+d'un ensemble de tâches dans un cluster où la communication entre les processeurs est implicite.
+Nous utilisons l'algorithme du vol de travail (en ligne) où chaque processeur gère sa liste de tâches,
+quand un processeur devient inactif, il choisit aléatoirement un autre processeur pour voler du travail.
+Le problème devient difficile quand le temps de vol de tâches prend un temps significatif qui perturbe
+l'ordonnancement (processeurs inactifs mais entrain d'attendre des tâches).
+Nous avons réussi à analyser mathématiquement (en utilisant les fonctions potentielles)
+et l'impact de la communication sur l'ordonnancement.  
+La première partie de ces travaux a été sélectionné pour être présenté à la conférence ECCO 2018
+\cite{Nicolas:khatiri:Denis:Fred:2018} à Freiburg en juin prochain.
+Une version complète a été soumis dans le journal ACM TOPC en début 2018.
+
+\item 
+La deuxième partie de ma thèse se base sur l'ordonnancement sur 2 GPUs (hétérogénéité de calcul)
+pour un problème particulier (page-rank).
+Le défit de ce problème est de faire l'équilibrage de charge pour calculer le produit matrice vecteur (base du page-rake).
+Nous avons implémenté des algorithmes d'ordonnancement en utilisant le vol de travail adapté au GPUs pour faire l'équilibrage de la charge entre les deux GPUs.
+La moitié de ce travail est commencé a l'université Université de Caroline du Nord à Charlotte (USA)
+où j'ai passé deux mois à l'automne 2016.
+
+\item La troisième partie où nous avons étudié un problème où l'hétérogénéité n'est plus simplement au niveau des calculs
+qui consiste a l'ordonnancement des Microservices sur un ensemble de machines.
+Un microservice est un petit composant de bibliothèque qui effectue une partie d'une application
+constituée de plusieurs microservices .  
+Les microservices sont conteneurisés (c'est-à-dire, ils sont isolés du reste d'application) dans des \textit{pods} avec différentes configurations.
+Dans un premier temps, nous avons terminé la modélisation du problème,
+en proposant des algorithmes simples pour gérer efficacement les ressources
+et améliorer la qualité de service. 
+Ce travail est le résultat d'un séjour de deux mois à l'université USP de Sao Paulo au Brésil.
+\end{enumerate}
+
+\subsection{Projet scientifique}
+
+La suite naturelle de mes travaux a été l'extension du même problème de work stealing sur les plates-formes hiérarchiques,
+où le temps de vol a l'intérieur d'un cluster est beaucoup plus petit qu'a l'intérieur.
+Nous avons implémenté des algorithmes qui prennent on considération
+la probabilité de vol (voler à l'intérieure est préférable).
+Les résultats de simulation prouvent que le choix de la probabilité impact
+les performances et aussi le mouvement de données dans la plate-forme.
+Une première version sera soumis à la conférence HiPC 2018.
+L'analyse mathématique de ce problème est en cours.
+
+\bibliography{publications,references}
+
+\newpage
+
+\section{Activités d'enseignement}
+Après mon Master, j'avais l'occasion d'enseigner en tant que vacataire.
+J'ai fait 20h de TP de langage C à la faculté des sciences d'Oujda.
+En même temps, j'ai été chargé d'un cours et encadrement de projet
+au sein IT Training Center à OUJDA. 
+Depuit 2016, j’ai commencé à enseigner aussi en France en étant vacataire à l'UGA (130h en 2ans),
+j'ai enseigné l'algorithmique et les langage (C, java, Ocaml).
+Plus que l'enseignement j'avais l'ocassion pour participer à la préparation
+de la matière enseignée (sujet de TP et sujet d'examen),
+faire la suivi des étudiant (contrôle continu), la correction de leurs devoirs.
+
+Les matières d'enseignement en détailles :
+
+
+
+\begin{description}
+    \item [\textbf{ 2017 -- 2018 *} ]  20h de TP en algorithmique et programmation par objets en licence L2 MIASHS avec Mr. Jérôme David
+
+        \par    contact :  \href{mailto:jerome.david@univ-grenoble-alpes.fr  }{ jerome.david@univ-grenoble-alpes.fr }
+
+    \item [ \hspace{2.3cm} \textbf{*} ]  15h de TP en initiation à l'informatique et l'algorithme en licence L1 MIASHS avec Professeur Benoit Lemaire
+        \par    contact :  \href{mailto:benoit.lemaire@univ-grenoble-alpes.fr}{benoit.lemaire@univ-grenoble-alpes.fr}
+     \item [ \hspace{2.3cm} \textbf{*} ]  9.5h de Programming language and compiler design en Master M1 MOSIG avec Professeur Denis Trystram
+        \par contact : \href{mailto:denis.trystram@imag.fr}{denis.trystram@imag.fr}
+        
+    \item [\textbf{ 2016 -- 2018 *} ]  66h (45h/21h)  de TP et TD en algorithmique et Programmation Fonctionnelle avec Professeur LAURENT Mounier pour Licence L1 à DLST. 
+	    \par    contenus : Types, Récursivité, Fondements mathématiques, Modélisation et Algorithmique, Programmation avancée et langage Ocaml. 
+        \par    contact :  \href{mailto:laurent.mounier@univ-grenoble-alpes.fr}{laurent.mounier@univ-grenoble-alpes.fr}
+%
+    \item [\textbf{ 2015 -- 2016 *} ]  18h de TP en algorithmique avancée avec Professeur Denis Trystram à ENSIMAG  
+        \par contenus : analyses asymptotiques, diviser pour régner et programmation dynamique
+        \par contact : \href{mailto:denis.trystram@imag.fr}{denis.trystram@imag.fr}
+
+
+
+    \item [\textbf{ 2014 -- 2015 *} ]%
+         20h de TP en algorithmique et programmation en C a la faculté des scince de OUJDA avec Madame Amina Yahya
+	     contact :  \href{mailto:aminayahia@yahoo.fr}{aminayahia@yahoo.fr}
+%
+\end{description}
+
+%\bibliography{publications,references}
+
+\end{document}
